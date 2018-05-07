@@ -74,7 +74,7 @@
    unlink($backupSqlFileName);
     
    /*
-    * Notification et envoi d'un lien de téléchargement par email
+    * Notification par email
     */
    $mailSubject = "Sauvegarde du site " . $siteName;
    
