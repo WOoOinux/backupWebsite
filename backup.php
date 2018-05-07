@@ -19,8 +19,8 @@
    $backups = scandir($appPath . $backupPath);
    
    foreach ($backups as $backup) {
-      $backup = $backupPath . $backup;
-      $backupLifetime = time() - filemtime($appPath . $backup);
+      $backup = $appPath . $backupPath . $backup;
+      $backupLifetime = time() - filemtime($backup);
       
       if ($backupLifetime >= $backupTimeToLive) {
          unlink($backup);
