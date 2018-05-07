@@ -2,10 +2,12 @@
    // Affectation des variables
    require_once "config.php";
    
+   $appPath = realpath(dirname(__FILE__)) . "/";
+   
    $backupDate = date("Y-m-d-H-i-s");
    $backupPath = "datas/";
-   $backupSqlFileName = $backupPath . $siteName . "-" . $backupDate . ".sql";
-   $backupZipFileName = $backupPath . $siteName . "-" . $backupDate . ".zip";
+   $backupSqlFileName = $appPath . $backupPath . $siteName . "-" . $backupDate . ".sql";
+   $backupZipFileName = $appPath . $backupPath . $siteName . "-" . $backupDate . ".zip";
    
    $mailheader = "From: " . $siteName . " <" . $mailTo . ">\r\n";
    $mailheader .= "Reply-to: " . $siteName . " <" . $mailTo . ">\r\n";
@@ -14,11 +16,11 @@
    /*
     * Suppression des sauvegardes trop anciennes
     */
-   $backups = scandir($backupPath);
+   $backups = scandir($appPath . $backupPath);
    
    foreach ($backups as $backup) {
       $backup = $backupPath . $backup;
-      $backupLifetime = time() - filemtime($backup);
+      $backupLifetime = time() - filemtime($appPath . $backup);
       
       if ($backupLifetime >= $backupTimeToLive) {
          unlink($backup);
@@ -31,7 +33,7 @@
    $archive = new ZipArchive();
    if ($archive->open($backupZipFileName, ZipArchive::CREATE) == TRUE) {
       $files = new RecursiveIteratorIterator(
-         new RecursiveDirectoryIterator($backupSitePath),
+         new RecursiveDirectoryIterator($appPath . $backupSitePath),
          RecursiveIteratorIterator::LEAVES_ONLY
       );
          
