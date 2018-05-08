@@ -1,13 +1,14 @@
 <?php
-   // Affectation des variables
+   /*
+    * Affectation des variables
+    */
    require_once "config.php";
    
    $appPath = realpath(dirname(__FILE__)) . "/";
    
-   $backupDate = date("Y-m-d-H-i-s");
    $backupPath = "datas/";
-   $backupSqlFileName = $appPath . $backupPath . $siteName . "-" . $backupDate . ".sql";
-   $backupZipFileName = $appPath . $backupPath . $siteName . "-" . $backupDate . ".zip";
+   $backupSqlFileName = $siteName . "-" . $backupDate . ".sql";
+   $backupZipFileName = $siteName . "-" . $backupDate . ".zip";
    
    $mailheader = "From: " . $siteName . " <" . $mailTo . ">\r\n";
    $mailheader .= "Reply-to: " . $siteName . " <" . $mailTo . ">\r\n";
@@ -31,7 +32,7 @@
     * Archivage des fichiers et répertoires du site
     */
    $archive = new ZipArchive();
-   if ($archive->open($backupZipFileName, ZipArchive::CREATE) == TRUE) {
+   if ($archive->open($appPath . $backupPath . $backupZipFileName, ZipArchive::CREATE) == TRUE) {
       $files = new RecursiveIteratorIterator(
          new RecursiveDirectoryIterator($appPath . $backupSitePath),
          RecursiveIteratorIterator::LEAVES_ONLY
@@ -57,9 +58,9 @@
    /*
    * Sauvegarde de la base de données
    */
-   if ($archive->open($backupZipFileName) == TRUE) {
+   if ($archive->open($appPath . $backupPath . $backupZipFileName) == TRUE) {
       // On dump la base de données dans un fichier sql
-      system("mysqldump --host=" . $dbHost . " --user=" . $dbUser . " --password=" . $dbPassword . " " . $dbName . " > " . $backupSqlFileName);
+      system("mysqldump --host=" . $dbHost . " --user=" . $dbUser . " --password=" . $dbPassword . " " . $dbName . " > " . $backupSqlFileName . " 2> /dev/null");
       // On insère le dump dans l'archive zip
       $archive->addFile($backupSqlFileName);
       // On referme l'archive zip
