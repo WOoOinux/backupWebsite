@@ -4,11 +4,11 @@
    
    $appPath = realpath(dirname(__FILE__)) . "/";
    
-   $backupDate = date("Y-m-d-H-i-s");
+   $backupDate = date("ymdHi");
    $backupPath = "datas/";
-   $backupSqlFileName = $appPath . $backupPath . $siteName . "-" . $backupDate . ".sql";
-   $backupZipFileName = $appPath . $backupPath . $siteName . "-" . $backupDate . ".zip";
-   
+   $backupSqlFileName =   $siteName . "_" . $backupDate . ".sql";
+   $backupZipFileName = $appPath . $backupPath . $siteName . "_" . $backupDate . ".zip";
+
    $mailheader = "From: " . $siteName . " <" . $mailTo . ">\r\n";
    $mailheader .= "Reply-to: " . $siteName . " <" . $mailTo . ">\r\n";
    $mailheader .= "Content-type: text/plain; charset=utf-8" . "\r\n";
@@ -33,15 +33,14 @@
    $archive = new ZipArchive();
    if ($archive->open($backupZipFileName, ZipArchive::CREATE) == TRUE) {
       $files = new RecursiveIteratorIterator(
-         new RecursiveDirectoryIterator($appPath . $backupSitePath),
+         new RecursiveDirectoryIterator($backupSitePath),
          RecursiveIteratorIterator::LEAVES_ONLY
       );
          
       foreach ($files as $name => $file) {
          if (!$file->isDir()) {
             $filePath = $file->getRealPath();
-            $relativePath = substr($filePath, strlen($backupSitePath) + 1);
-            
+            $relativePath = substr($filePath, strlen($backupSitePath));
             $archive->addFile($filePath, $relativePath);
          }
       }
@@ -59,9 +58,9 @@
    */
    if ($archive->open($backupZipFileName) == TRUE) {
       // On dump la base de données dans un fichier sql
-      system("mysqldump --host=" . $dbHost . " --user=" . $dbUser . " --password=" . $dbPassword . " " . $dbName . " > " . $backupSqlFileName);
+      system("mysqldump ---host=" . $dbHost . " --user=" . $dbUser . " --password=" . $dbPassword . " " . $dbName . " > " . $backupSqlFileName . " 2> /dev/null");
       // On insère le dump dans l'archive zip
-      $archive->addFile($backupSqlFileName);
+      $archive->addFile( $backupSqlFileName);
       // On referme l'archive zip
       $archive->close();
    } else {
