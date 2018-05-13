@@ -4,7 +4,7 @@ Ce script permet d'automatiser la sauvegarde d'un site Internet lorsqu'il est in
 
 ## Installation
 
-Installez le répertoire de backupWebsite à la racine de votre hébergement et **éditez le fichier config.php selon votre configuration**.
+Installez le répertoire de backupWebsite à la racine de votre hébergement, **dupliquez le fichier config-sample.php en config.php et éditez ce dernier selon votre configuration**.
 
 ## Activation
 
